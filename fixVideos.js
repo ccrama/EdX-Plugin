@@ -4,9 +4,10 @@ let currentCourse = window.location.pathname.split("/")[2]
 
 if (currentCourse) {
     if (isParentWindow) {
-        currentCourse.replace("course-v1:", "")
+        currentCourse = currentCourse.replace("course-v1:", "")
     } else {
-        currentCourse.replace("block-v1:", "")
+        let split = currentCourse.split("@")
+        currentCourse = split[0].replace("block-v1:", "")
     }
 } else {
     currentCourse = "global"
