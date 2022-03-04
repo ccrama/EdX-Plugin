@@ -27,7 +27,9 @@
 }
 
 
-/*css dark mode modified from https://gist.github.com/aaronice/5c083b9a8a3cbee29c7cd6bf3c708233*/
+/*css dark mode modified from https://gist.github.com/aaronice/5c083b9a8a3cbee29c7cd6bf3c708233
+
+Might want to make this an actual CSS change instead of using filters. Sounds hard though and it looks good enough.*/
 
 html.dark {
     background-color: #000 !important;

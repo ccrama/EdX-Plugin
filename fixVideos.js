@@ -1,3 +1,4 @@
+//Used for localstorage for per-class settings
 let isParentWindow = window.location.href.includes("learning.edx.org")
 let currentCourse = window.location.pathname.split("/")[2]
 
@@ -12,7 +13,7 @@ if (currentCourse) {
 }
 
 
-//Set up event listeners
+/* Event Listeners */
 chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
     if (msg.setting === 'dark_mode') {
         setDarkMode(msg.new_value)
@@ -20,12 +21,8 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
     }
 });
 
-function checkPageSettings() {
-    chrome.runtime.sendMessage({ setting: "dark_mode" }, function(response) {
-        setDarkMode(response.value)
-    });
-}
 
+/* Settings */
 function getCourseOptions() {
     let foundOptions = localStorage.getItem('edx-improver:' + currentCourse)
 
@@ -35,71 +32,15 @@ function getCourseOptions() {
 let pageOptions = getCourseOptions()
 
 function setCourseOption(key, value) {
-    pageOptions.skip_intro = value
+    pageOptions[key] = value
 
     localStorage.setItem('edx-improver:' + currentCourse, JSON.stringify(pageOptions))
 }
 
-
-function wrapVideos() {
-    var players = document.getElementsByTagName('video');
-
-    for (var i = 0, l = players.length; i < l; i++) {
-        let node = players[i]
-        node.muted = false;
-
-        node.addEventListener('timeupdate', (event) => {
-            if (event.srcElement.currentTime < pageOptions.skip_intro) {
-                skipIntro(pageOptions.skip_intro - event.srcElement.currentTime, event.srcElement);
-            }
-        })
-
-        node.addEventListener("click", event => {
-            event.stopPropagation();
-
-            if (node.playing) {
-                node.controls = true;
-            }
-
-        }, { capture: true });
-
-        let settingsMenu = htmlToElement('<div class="" style="display: inline-block; float: left;"></div>')
-        let settingsButton = htmlToElement('<button class="control" type="button"><span class="fa fa-cog"></span></button>')
-
-        let menu = htmlToElement('<div class="hidden" id="settings-dropdown" ></div>')
-
-        settingsButton.addEventListener('click', function(event) {
-            menu.classList.toggle('hidden')
-        })
-
-        let nonDefault = pageOptions.skip_intro ? `value="${pageOptions.skip_intro}"` : ''
-        let secondsInput = htmlToElement('<span>Skip first <input type="numeric" ' + nonDefault + ' " placeholder="" style="width: 30px;"/> seconds</span>')
-
-        secondsInput.addEventListener('change', function(event) {
-            let newValue = event.target.value
-
-            setCourseOption('skip_intro', newValue)
-        })
-
-        menu.appendChild(secondsInput)
-        settingsMenu.appendChild(settingsButton)
-        settingsMenu.appendChild(menu)
-
-        document.getElementsByClassName('video-controls')[0].appendChild(settingsMenu)
-    }
-}
-
-
-checkPageSettings()
-
-if (isParentWindow) {
-    addDarkModeButton()
-} else {
-    wrapVideos()
-}
-
-function skipIntro(seconds, video) {
-    video.currentTime += seconds
+function checkPageSettings() {
+    chrome.runtime.sendMessage({ setting: "dark_mode" }, function(response) {
+        setDarkMode(response.value)
+    });
 }
 
 function setDarkMode(enabled) {
@@ -128,4 +69,70 @@ function addDarkModeButton() {
     setTimeout(function() {
         document.getElementsByClassName("user-dropdown")[0].parentElement.appendChild(darkModeButton)
     }, 3000)
+}
+
+
+/* Videos */
+function skipIntro(seconds, video) {
+    video.currentTime += seconds
+}
+
+function wrapVideos() {
+    var players = document.getElementsByTagName('video');
+
+    for (var i = 0, l = players.length; i < l; i++) {
+        let node = players[i]
+        node.muted = false;
+
+        node.addEventListener('timeupdate', (event) => {
+            if (event.srcElement.currentTime < pageOptions.skip_intro) {
+                skipIntro(pageOptions.skip_intro - event.srcElement.currentTime, event.srcElement);
+            }
+        })
+
+        node.addEventListener("click", event => {
+            event.stopPropagation();
+
+            if (node.playing) {
+                node.controls = true;
+            }
+
+        }, { capture: true });
+
+        //Add a settings menu to the current video menu
+        let settingsMenu = htmlToElement('<div class="" style="display: inline-block; float: left;"></div>')
+        let settingsButton = htmlToElement('<button class="control" type="button"><span class="fa fa-cog"></span></button>')
+
+        let menu = htmlToElement('<div class="hidden" id="settings-dropdown" ></div>')
+
+        settingsButton.addEventListener('click', function(event) {
+            menu.classList.toggle('hidden')
+        })
+
+        let nonDefault = pageOptions.skip_intro ? `value="${pageOptions.skip_intro}"` : ''
+        let secondsInput = htmlToElement('<span>Skip first <input type="numeric" ' + nonDefault + ' " placeholder="" style="width: 30px;"/> seconds</span>')
+
+        secondsInput.addEventListener('change', function(event) {
+            let newValue = event.target.value
+
+            setCourseOption('skip_intro', newValue)
+        })
+
+        menu.appendChild(secondsInput)
+        settingsMenu.appendChild(settingsButton)
+        settingsMenu.appendChild(menu)
+
+        document.getElementsByClassName('video-controls')[0].appendChild(settingsMenu)
+    }
+}
+
+
+/* Set up page */
+
+checkPageSettings()
+
+if (isParentWindow) {
+    addDarkModeButton()
+} else {
+    wrapVideos()
 }
