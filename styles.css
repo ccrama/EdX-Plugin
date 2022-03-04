@@ -1,0 +1,70 @@
+.improved-options {
+    padding: 1rem;
+}
+
+.slider,
+.vcr,
+.volume,
+.add-fullscreen {
+    display: none !important;
+}
+
+#settings-dropdown {
+    height: auto;
+    width: 80%;
+    background: #000;
+    padding: 10px;
+    left: 80%;
+    right: auto;
+    display: inline;
+}
+
+.speed {
+    font-weight: bold;
+    float: right;
+    font-size: .75rem;
+    padding: 1rem;
+}
+
+
+/*css dark mode modified from https://gist.github.com/aaronice/5c083b9a8a3cbee29c7cd6bf3c708233*/
+
+html.dark {
+    background-color: #000 !important;
+}
+
+.dark body {
+    filter: contrast(100%) invert(100%) hue-rotate(180deg) !important;
+    -ms-filter: invert(100%);
+    -webkit-filter: contrast(100%) invert(100%) hue-rotate(180deg) !important;
+    text-rendering: optimizeSpeed;
+    image-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    -webkit-image-rendering: optimizeSpeed;
+    background: #efefef;
+}
+
+.dark video,
+.dark iframe,
+.dark .video-controls,
+.dark .closed-captions,
+.dark canvas,
+.dark embed[type='application/x-shockwave-flash'],
+.dark object[type='application/x-shockwave-flash'],
+.dark *[style*='url('] {
+    filter: invert(100%) hue-rotate(-180deg) !important;
+    -ms-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) hue-rotate(-180deg) !important;
+}
+
+.dark .video-player-pre {
+    background: #fff !important;
+}
+
+.dark .video-player-post {
+    background: #fff !important;
+}
+
+.dark video {
+    background-color: #000 !important;
+}
