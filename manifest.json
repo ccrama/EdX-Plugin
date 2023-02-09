@@ -1,20 +1,30 @@
 {
-    "manifest_version": 2,
-    "name": "EdX Improver",
-    "version": "0.1.0",
-    "description": "Improves EdX Video Player and adds additional options.",
-    "content_scripts": [{
-        "css": ["styles.css"],
-        "js": ["helper.js", "fixVideos.js", "videoProperties.js"],
-        "matches": ["https://learning.edx.org/course/*", "https://courses.edx.org/xblock/*"],
-        "all_frames": true
-    }],
-    "background": {
-        "scripts": [
-            "background.js"
-        ]
-    },
-    "permissions": [
-        "storage"
-    ]
+	"manifest_version": 3,
+	"name": "EdX Improver",
+	"version": "0.1.0",
+	"description": "Improves EdX Video Player and adds additional options.",
+	"content_scripts": [
+		{
+			"css": ["styles.css"],
+			"js": ["util/helper.js", "plugin.js", "videoProperties.js"],
+			"matches": [
+				"https://learning.edx.org/course/*",
+				"https://courses.edx.org/xblock/*"
+			],
+			"all_frames": true
+		}
+	],
+	"background": {
+		"service_worker": "dom/background.js"
+	},
+	"web_accessible_resources": [
+		{
+			"matches": [
+				"https://learning.edx.org/*",
+				"https://courses.edx.org/*"
+			],
+			"resources": ["dom/autoComplete.js", "util/helper.js", "util/settings.js"]
+		}
+	],
+	"permissions": ["storage"]
 }
