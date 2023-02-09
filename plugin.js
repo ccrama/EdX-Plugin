@@ -90,5 +90,8 @@ let currentCourse = window.location.pathname.split("/")[2]
         settings.addDarkModeButton()
     } else {
         wrapVideos()
+        if (settings.getPageOption("complete_on_next") || true) {
+            autoComplete.enable(document, window)
+        }
     }
 })();
