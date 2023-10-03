@@ -1,7 +1,7 @@
 function getURLFrom(document) {
     //The url for video completion is in the data-metadata of the video div
 
-    let videoParent = document.getElementsByClass('video')[0]
+    let videoParent = document.getElementsByClassName('video')[0]
     let metadata = videoParent.getAttribute('data-metadata')
     let metadataObj = JSON.parse(metadata)
 
@@ -12,22 +12,19 @@ function getURLFrom(document) {
     return null
 }
 
-//Since this dom is in an iframe in the parent, and the parent is the one that actually has the next button, we need to hook into the page unload event to fire off the API request
-
-
-function enable(document, window) {
-    console.log("Getting URL")
+function enable(document) {
     let autoCompleteUrl = null
-    window.addEventListener('beforeunload', function (e) {
-        if (autoCompleteUrl) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", autoCompleteUrl, true);
-            xhr.send();
-        }
-    });
 
     //Get the url from the DOM
     autoCompleteUrl = getURLFrom(document)
-    console.log("Got url", autoCompleteUrl)
+    console.log("Autocomplete URL is:", autoCompleteUrl)
 
+    //Send this event to the parent window
+    chrome.runtime.sendMessage({ autocomplete_url: autoCompleteUrl }, function(response) {
+        console.log("Response from parent:", response)
+    })
+}
+
+export {
+    enable
 }
