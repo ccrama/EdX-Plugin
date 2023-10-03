@@ -27,7 +27,7 @@ function setDarkMode(enabled) {
     while (document.parentElement) {
         topParent = document.parentElement
     }
-    let html = topParent.getElementsByTagName("html")[0]
+    let html = topParent.getElementsByTagName("body")[0]
 
     if (enabled) {
         html.classList.add("dark")
@@ -55,5 +55,6 @@ export {
     getCourseOption,
     setCourseOption,
     checkPageSettings,
-    addDarkModeButton
+    addDarkModeButton,
+    setDarkMode
 }

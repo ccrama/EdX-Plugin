@@ -2,9 +2,12 @@
 let isParentWindow = window.location.href.includes("learning.edx.org")
 let currentCourse = window.location.pathname.split("/")[2]
 
+let darkModeSetting = null
+let skipIntroSetting = null
+
 ;(async () => {
     const settings = await import('./util/settings.js')
-    const autoComplete = await import('./dom/autoComplete.js')
+    //const autoComplete = await import('./dom/autoComplete.js')
 
     if (currentCourse) {
         if (isParentWindow) {
@@ -20,11 +23,10 @@ let currentCourse = window.location.pathname.split("/")[2]
 
     /* Event Listeners */
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        console.log("GOT HERE", request )
         if (request.setting === 'dark_mode') {
             settings.setDarkMode(request.new_value)
             sendResponse()
-        } else if (request.autocomplete_url && isParentWindow) {
+        } else if (false && request.autocomplete_url && isParentWindow) {
             sendResponse()
             //Find all .next-btn and .next-button elements, and add a click listener
             let nextButtons = document.getElementsByClassName('next-btn').append(...document.getElementsByClassName('next-button'))
@@ -104,7 +106,7 @@ let currentCourse = window.location.pathname.split("/")[2]
         settings.addDarkModeButton()
     } else {
         wrapVideos()
-        if (settings.getCourseOption("complete_on_next") || true) {
+        if (false && settings.getCourseOption("complete_on_next")) {
             autoComplete.enable(document)
         }
     }
