@@ -2,11 +2,9 @@
 let isParentWindow = window.location.href.includes("learning.edx.org")
 let currentCourse = window.location.pathname.split("/")[2]
 
-let darkModeSetting = null
-let skipIntroSetting = null
-
 ;(async () => {
-    const settings = await import('./util/settings.js')
+    var settings = await import('./util/settings.js')
+    settings = settings.settings
     //const autoComplete = await import('./dom/autoComplete.js')
 
     if (currentCourse) {
@@ -24,23 +22,9 @@ let skipIntroSetting = null
     /* Event Listeners */
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.setting === 'dark_mode') {
-            settings.setDarkMode(request.new_value)
+            settings.darkMode.setGlobalOption(request.new_value)
+            settings.darkMode.apply()
             sendResponse()
-        } else if (false && request.autocomplete_url && isParentWindow) {
-            sendResponse()
-            //Find all .next-btn and .next-button elements, and add a click listener
-            let nextButtons = document.getElementsByClassName('next-btn').append(...document.getElementsByClassName('next-button'))
-            for (let i = 0; i < nextButtons.length; i++) {
-                console.log("Adding to button")
-                nextButtons[i].addEventListener('click', function () {
-                    console.log("Sending a POST request to", request.autocomplete_url)
-                    //Send a POST request to the URL
-                    let xhr = new XMLHttpRequest();
-                    xhr.open("POST", request.autocomplete_url, true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify({}));
-                }, true)
-            }
         }
     });
 
@@ -58,7 +42,7 @@ let skipIntroSetting = null
             node.muted = false;
 
             node.addEventListener('timeupdate', (event) => {
-                let skipIntroTime = settings.getCourseOption("skip_intro")
+                let skipIntroTime = settings.skipIntro.getCourseOption(currentCourse)
                 if (skipIntroTime && event.srcElement.currentTime < skipIntroTime) {
                     skipIntro(skipIntroTime - event.srcElement.currentTime, event.srcElement);
                 }
@@ -83,13 +67,13 @@ let skipIntroSetting = null
                 menu.classList.toggle('hidden')
             })
 
-            let nonDefault = settings.getCourseOption("skip_intro") != null ? `value="${settings.getCourseOption("skip_intro")}"` : ''
+            let nonDefault = settings.skipIntro.getCourseOption(currentCourse) != null ? `value="${settings.skipIntro.getCourseOption(currentCourse) }"` : ''
             let secondsInput = htmlToElement('<span>Skip first <input type="numeric" ' + nonDefault + ' " placeholder="" style="width: 30px;"/> seconds</span>')
 
             secondsInput.addEventListener('change', function (event) {
                 let newValue = event.target.value
 
-                settings.setCourseOption('skip_intro', newValue)
+                settings.skipIntro.setCourseOption(currentCourse, newValue)
             })
 
             menu.appendChild(secondsInput)
@@ -100,14 +84,12 @@ let skipIntroSetting = null
         }
     }
 
+    settings.darkMode.apply();
 
     /* Set up page */
     if (isParentWindow) {
-        settings.addDarkModeButton()
+        settings.darkMode.addDarkModeButton()
     } else {
         wrapVideos()
-        if (false && settings.getCourseOption("complete_on_next")) {
-            autoComplete.enable(document)
-        }
     }
 })();
