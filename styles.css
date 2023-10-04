@@ -31,11 +31,12 @@
 
 Might want to make this an actual CSS change instead of using filters. Sounds hard though and it looks good enough.*/
 
-html.dark {
+html>body.dark {
     background-color: #000 !important;
+    background: #000 !important;
 }
 
-.dark body {
+.dark {
     filter: contrast(100%) invert(100%) hue-rotate(180deg) !important;
     -ms-filter: invert(100%);
     -webkit-filter: contrast(100%) invert(100%) hue-rotate(180deg) !important;
@@ -43,7 +44,7 @@ html.dark {
     image-rendering: optimizeSpeed;
     -webkit-font-smoothing: antialiased;
     -webkit-image-rendering: optimizeSpeed;
-    background: #efefef;
+    background: #efefef !important;
 }
 
 .dark video,
