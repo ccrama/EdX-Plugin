@@ -6,7 +6,7 @@
 	"content_scripts": [
 		{
 			"css": ["styles.css"],
-			"js": ["util/helper.js", "plugin.js", "videoProperties.js"],
+			"js": ["util/helper.js", "plugin.js", "util/videoProperties.js"],
 			"matches": [
 				"https://learning.edx.org/course/*",
 				"https://courses.edx.org/xblock/*"

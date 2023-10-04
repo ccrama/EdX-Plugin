@@ -6,6 +6,7 @@ function getSettingsObject() {
 }
 
 function setCourseOption(key, value) {
+    let pageOptions = getSettingsObject()
     pageOptions[key] = value
 
     localStorage.setItem('edx-improver:' + currentCourse, JSON.stringify(pageOptions))
